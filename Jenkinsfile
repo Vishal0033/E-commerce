@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('Checkout') {
       steps {
         git 'https://github.com/Vishal0033/E-commerce.git'
       }
