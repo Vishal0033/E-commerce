@@ -1,14 +1,22 @@
-# E-commerce
-# **Automated Flask App Deployment with GitHub, Docker, EC2, Ansible, Prometheus & Grafana**
+# RetailMax: E-Commerce Monolith Cloud Migration Platform
 
 ## **📌 Overview**
 This project automates the **end-to-end deployment** of a Flask application with full monitoring using **Prometheus** and **Grafana**.  
 The pipeline covers:
 - **Source Code Management** → GitHub  
 - **Containerization** → Docker  
-- **Provisioning** → AWS EC2  
+- **Provisioning** → AWS EC2 
+- **Jenkins** → CI/CD  
 - **Automation** → Ansible  
 - **Monitoring Stack** → Prometheus Node Exporter, Prometheus Server, and Grafana
+
+---
+
+## Team Members & Responsibilities
+1. **Akshit** - Handles **Docker** setup and containerization.
+2. **Tranay** - Manages **Jenkins** pipeline automation.
+3. **Vishal** - Works on **Terraform**, **Prometheus**, **Grafana**, and **App Development**.
+4. **Vivek** - Manages **GitHub** repositories and version control.
 
 ---
 
@@ -20,7 +28,8 @@ The pipeline covers:
 - **Prometheus Node Exporter** for system metrics  
 - **Prometheus Server** for metrics collection  
 - **Grafana** dashboards for visualization  
-- **Configurable inventory** for multiple server targets  
+- **Configurable inventory** for multiple server targets 
+- **Jenkins** for CI/CD integration 
 
 ---
 
@@ -30,6 +39,7 @@ The pipeline covers:
 | GitHub | Source control |
 | Docker | Containerized services |
 | AWS EC2 | Cloud hosting |
+| Jenkins | CI/CD Integration |
 | Ansible | Automated provisioning |
 | Flask | Python web backend |
 | Prometheus Node Exporter | Metrics endpoint |
@@ -50,9 +60,8 @@ The pipeline covers:
 │   ├── app.py                 # Flask application
 │   ├── requirements.txt       # Python dependencies
 │   └── Dockerfile             # Container build definition
-├── monitoring/
-│   ├── prometheus.yml         # Prometheus configuration
-│   └── docker-compose.yml     # Prometheus + Grafana stack
+│   └── prometheus.yml         # Prometheus configuration
+├── jenkins/
 └── README.md                  # Documentation
 ```
 
@@ -60,7 +69,7 @@ The pipeline covers:
 
 ## **⚙️ Setup Instructions**
 
-### **1️⃣ GitHub Setup**
+### ** GitHub Setup**
 ```bash
 git init
 git remote add origin git@github.com:<username>/<repo>.git
@@ -71,7 +80,7 @@ git push -u origin main
 
 ---
 
-### **2️⃣ Dockerize Flask App**
+### ** Dockerize Flask App**
 **`app/Dockerfile`**
 ```dockerfile
 FROM python:3.12-slim
@@ -90,7 +99,7 @@ docker run -p 5000:5000 flask-app
 
 ---
 
-### **3️⃣ Launch AWS EC2**
+### ** Launch AWS EC2**
 - Ubuntu 22.04
 - Open inbound rules for ports:
   - `5000` (Flask)
@@ -100,7 +109,17 @@ docker run -p 5000:5000 flask-app
 
 ---
 
-### **4️⃣ Configure Ansible Inventory**
+### ** Jenkins **
+```bash
+# Start Jenkins container
+docker run -d --name jenkins -p 8081:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+
+# Access Jenkins UI
+http://<ec2-public-ip>:8081
+```
+---
+
+### ** Configure Ansible Inventory**
 `ansible/inventory.ini`
 ```ini
 [ec2-app]
@@ -109,7 +128,7 @@ docker run -p 5000:5000 flask-app
 
 ---
 
-### **5️⃣ Ansible Playbook**
+### ** Ansible Playbook**
 Your playbook should:
 - Install Docker & dependencies
 - Clone Flask app from GitHub
@@ -124,7 +143,7 @@ ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
 
 ---
 
-### **6️⃣ Verify Deployment**
+### ** Verify Deployment**
 - **Flask App:** `http://<EC2_PUBLIC_IP>:5000`
 - **Node Exporter:** `http://<EC2_PUBLIC_IP>:9100/metrics`
 - **Prometheus:** `http://<EC2_PUBLIC_IP>:9090`
